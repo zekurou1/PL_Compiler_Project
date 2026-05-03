@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToyLang Compiler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ── Header ── -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-logo">⬡</div>
+            <div>
+                <h1>ToyLang <span class="header-badge">v1.0</span></h1>
+                <div class="subtitle">// interactive compiler playground</div>
+            </div>
+        </div>
+        <div class="header-meta">
+            <div class="status-dot"></div>
+            <span class="status-label">RUNTIME READY</span>
+        </div>
+    </header>
+
+    <!-- ── Main Editor / Output ── -->
+    <main class="main-content">
+
+        <!-- Editor Panel -->
+        <div class="panel editor-panel">
+            <div class="panel-header">
+                <div class="panel-header-left">
+                    <div class="window-dots">
+                        <div class="window-dot close"></div>
+                        <div class="window-dot min"></div>
+                        <div class="window-dot expand"></div>
+                    </div>
+                    <h2>editor.tl</h2>
+                </div>
+                <div class="toolbar">
+                    <select id="sampleSelect" class="btn btn-ghost">
+                        <option value="">Load sample…</option>
+                    </select>
+                    <button id="clearBtn" class="btn btn-ghost">
+                        <span class="btn-icon">⌫</span>
+                        Clear
+                    </button>
+                    <button id="runBtn" class="btn btn-run">
+                        <span class="btn-icon">▶</span>
+                        <span class="btn-label">Run</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="editor-body">
+                <textarea
+                    id="codeEditor"
+                    class="editor-textarea"
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    placeholder="// Write your ToyLang code here…&#10;// Press Ctrl+Enter to run"
+                ></textarea>
+            </div>
+
+            <div class="editor-footer">
+                <span class="editor-stat">Chars: <span id="charCount">0</span></span>
+                <span class="editor-stat">Lines: <span id="lineCount">0</span></span>
+                <span style="flex:1"></span>
+                <span class="kbd-hint">
+                    <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> to run
+                </span>
+            </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="panel output-panel">
+            <div class="panel-header">
+                <div class="panel-header-left">
+                    <div class="window-dots">
+                        <div class="window-dot close"></div>
+                        <div class="window-dot min"></div>
+                        <div class="window-dot expand"></div>
+                    </div>
+                    <h2>stdout</h2>
+                </div>
+                <div class="toolbar">
+                    <button id="clearOutputBtn" class="btn btn-ghost">
+                        <span class="btn-icon">✕</span>
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="output-body">
+                <pre id="output" class="output-box"></pre>
+                <div id="error" class="error-box"></div>
+            </div>
+
+            <div class="output-status">
+                <div id="outputIndicator" class="output-indicator"></div>
+                <span id="outputStatusText" class="output-status-text">Ready</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ── Grammar Reference ── -->
+    <section class="grammar-section">
+        <div class="grammar-header">
+            <h3>Language Reference</h3>
+            <div class="grammar-header-line"></div>
+        </div>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <h4>Variables</h4>
+                <code>let x = 10</code>
+            </div>
+            <div class="syntax-card">
+                <h4>Print</h4>
+                <code>print("Hello, World!")</code>
+            </div>
+            <div class="syntax-card">
+                <h4>Conditionals</h4>
+                <code>if (x > 5) { ... } else { ... }</code>
+            </div>
+            <div class="syntax-card">
+                <h4>Loops</h4>
+                <code>while (x > 0) { x = x - 1 }</code>
+            </div>
+            <div class="syntax-card">
+                <h4>Arithmetic</h4>
+                <code>x + y - z * a / b</code>
+            </div>
+            <div class="syntax-card">
+                <h4>Booleans</h4>
+                <code>true, false, &&, ||, !</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+        ToyLang Compiler Playground &nbsp;·&nbsp; Built with ♥ &nbsp;·&nbsp; Pure Python
+    </footer>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
