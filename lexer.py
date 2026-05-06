@@ -27,7 +27,7 @@ from error import LexicalError
 _DELIMITERS: frozenset[str] = frozenset("(){};,")
 
 # Operators, longest-match first (two-char before one-char)
-_MULTI_OPS: tuple[str, ...] = ("==", "!=", "<=", ">=", "&&", "||")
+_MULTI_OPS: tuple[str, ...] = ("==", "!=", "<=", ">=", "&&", "||", "**", "+=", "-=", "*=", "/=", "%=")
 _SINGLE_OPS: frozenset[str] = frozenset("=+-*/<>!%")
 
 

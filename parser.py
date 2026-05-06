@@ -102,9 +102,9 @@ class Parser:
                 return self._while_stmt()
 
         if tok.type == TokenType.IDENTIFIER:
-            # Lookahead: identifier followed by '=' is an assignment
+            # Lookahead: identifier followed by assignment operator (=, +=, -=, *=, /=, %=)
             nxt = self._tokens[self._pos + 1] if self._pos + 1 < len(self._tokens) else None
-            if nxt and nxt.type == TokenType.OPERATOR and nxt.value == "=":
+            if nxt and nxt.type == TokenType.OPERATOR and nxt.value in ("=", "+=", "-=", "*=", "/=", "%="):
                 return self._assignment()
 
         raise LangSyntaxError(
@@ -121,11 +121,40 @@ class Parser:
         self._expect(TokenType.DELIMITER, ";", msg="Missing ';' after variable declaration")
         return VarDecl(name=name_tok.value, value=value, line=kw.line, col=kw.column)
 
-    # assignment ::= IDENTIFIER "=" expression ";"
+    # assignment ::= IDENTIFIER ("=" | "+=" | "-=" | "*=" | "/=" | "%=") expression ";"
     def _assignment(self) -> Assignment:
         name_tok = self._expect(TokenType.IDENTIFIER)
-        self._expect(TokenType.OPERATOR, "=")
+        op_tok = self._peek()
+        
+        # Check for assignment operator (=, +=, -=, *=, /=, %=)
+        if op_tok.type == TokenType.OPERATOR and op_tok.value in ("=", "+=", "-=", "*=", "/=", "%="):
+            op = self._advance().value
+        else:
+            raise LangSyntaxError(
+                f"Expected assignment operator, got {op_tok.value!r}",
+                op_tok.line, op_tok.column,
+            )
+        
         value = self._expression()
+        
+        # Desugar compound assignments: x += y → x = x + y
+        if op != "=":
+            op_map = {
+                "+=": "+",
+                "-=": "-",
+                "*=": "*",
+                "/=": "/",
+                "%=": "%",
+            }
+            arithmetic_op = op_map[op]
+            value = BinaryOp(
+                op=arithmetic_op,
+                left=Identifier(name=name_tok.value, line=name_tok.line, col=name_tok.column),
+                right=value,
+                line=name_tok.line,
+                col=name_tok.column,
+            )
+        
         self._expect(TokenType.DELIMITER, ";", msg="Missing ';' after assignment")
         return Assignment(name=name_tok.value, value=value, line=name_tok.line, col=name_tok.column)
 
@@ -173,7 +202,25 @@ class Parser:
     # ------------------------------------------------------------------
 
     def _expression(self) -> ASTNode:
-        return self._equality()
+        return self._logical_or()
+
+    # logical_or ::= logical_and ("||" logical_and)*
+    def _logical_or(self) -> ASTNode:
+        left = self._logical_and()
+        while self._check(TokenType.OPERATOR, "||"):
+            op = self._advance()
+            right = self._logical_and()
+            left = BinaryOp(op=op.value, left=left, right=right, line=op.line, col=op.column)
+        return left
+
+    # logical_and ::= equality ("&&" equality)*
+    def _logical_and(self) -> ASTNode:
+        left = self._equality()
+        while self._check(TokenType.OPERATOR, "&&"):
+            op = self._advance()
+            right = self._equality()
+            left = BinaryOp(op=op.value, left=left, right=right, line=op.line, col=op.column)
+        return left
 
     # equality ::= comparison (("==" | "!=") comparison)*
     def _equality(self) -> ASTNode:
@@ -203,22 +250,32 @@ class Parser:
             left = BinaryOp(op=op.value, left=left, right=right, line=op.line, col=op.column)
         return left
 
-    # factor ::= unary (("*" | "/") unary)*
+    # factor ::= unary (("*" | "/" | "%") unary)*
     def _factor(self) -> ASTNode:
         left = self._unary()
-        while self._check(TokenType.OPERATOR, "*") or self._check(TokenType.OPERATOR, "/"):
+        while self._check(TokenType.OPERATOR, "*") or self._check(TokenType.OPERATOR, "/") or self._check(TokenType.OPERATOR, "%"):
             op = self._advance()
             right = self._unary()
             left = BinaryOp(op=op.value, left=left, right=right, line=op.line, col=op.column)
         return left
 
-    # unary ::= ("-" | "!") unary | primary
+    # unary ::= ("-" | "!") unary | power
     def _unary(self) -> ASTNode:
         if self._check(TokenType.OPERATOR, "-") or self._check(TokenType.OPERATOR, "!"):
             op = self._advance()
             operand = self._unary()
             return UnaryOp(op=op.value, operand=operand, line=op.line, col=op.column)
-        return self._primary()
+        return self._power()
+
+    # power ::= primary ("**" power)?  (right-associative)
+    def _power(self) -> ASTNode:
+        left = self._primary()
+        if self._check(TokenType.OPERATOR, "**"):
+            op = self._advance()
+            # Right-associative: call _power again, not _primary
+            right = self._power()
+            return BinaryOp(op=op.value, left=left, right=right, line=op.line, col=op.column)
+        return left
 
     # primary ::= NUMBER | STRING | IDENTIFIER | "(" expression ")"
     def _primary(self) -> ASTNode:
