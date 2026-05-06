@@ -161,6 +161,13 @@ class Interpreter:
             result = l / r
             # Return int if result is whole number
             return int(result) if isinstance(result, float) and result == int(result) else result
+        if op == "%":
+            r = self._num(right, op, node)
+            if r == 0:
+                raise LangRuntimeError("Modulo by zero", node.line, node.col)
+            return self._num(left, op, node) % r
+        if op == "**":
+            return self._num(left, op, node) ** self._num(right, op, node)
 
         # Comparison
         if op == ">":  return left > right

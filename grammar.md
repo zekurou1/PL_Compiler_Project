@@ -21,12 +21,15 @@ while_stmt     ::= "while" "(" expression ")" block
 
 block          ::= "{" statement* "}"
 
-expression     ::= equality
+expression     ::= logical_or
+logical_or     ::= logical_and ("||" logical_and)*
+logical_and    ::= equality ("&&" equality)*
 equality       ::= comparison (("==" | "!=") comparison)*
 comparison     ::= term ((">" | "<" | ">=" | "<=") term)*
 term           ::= factor (("+" | "-") factor)*
-factor         ::= unary (("*" | "/") unary)*
-unary          ::= ("-" | "!") unary | primary
+factor         ::= unary (("*" | "/" | "%") unary)*
+unary          ::= ("-" | "!") unary | power
+power          ::= primary ("**" power)?
 primary        ::= NUMBER | STRING | IDENTIFIER | "(" expression ")"
 ```
 
@@ -34,12 +37,24 @@ primary        ::= NUMBER | STRING | IDENTIFIER | "(" expression ")"
 
 | Level | Operators       | Associativity |
 |-------|-----------------|---------------|
-| 1     | `==` `!=`       | left          |
-| 2     | `>` `<` `>=` `<=` | left        |
-| 3     | `+` `-`         | left          |
-| 4     | `*` `/`         | left          |
-| 5     | `-` (unary) `!` | right         |
-| 6     | literals, `()`  | —             |
+| 1     | `\|\|`            | left          |
+| 2     | `&&`            | left          |
+| 3     | `==` `!=`       | left          |
+| 4     | `>` `<` `>=` `<=` | left        |
+| 5     | `+` `-`         | left          |
+| 6     | `*` `/` `%`     | left          |
+| 7     | `**`            | right         |
+| 8     | `-` (unary) `!` | right         |
+| 9     | literals, `()`  | —             |
+
+## Special Features
+
+**Compound Assignments** (syntactic sugar):
+- `x += e` desugars to `x = x + e`
+- `x -= e` desugars to `x = x - e`
+- `x *= e` desugars to `x = x * e`
+- `x /= e` desugars to `x = x / e`
+- `x %= e` desugars to `x = x % e`
 
 ## Keywords
 
