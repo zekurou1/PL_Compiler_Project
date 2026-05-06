@@ -452,28 +452,29 @@ body {
     position: relative;
 }
 
+/* ── FIX: line numbers must exactly match the textarea's font/size/padding ── */
 .line-numbers {
-    display: flex;
-    flex-direction: column;
     background: var(--bg-secondary);
     border-right: 1px solid var(--border-default);
-    padding: 16px 0;
+    padding: 16px 8px;          /* top matches .code-editor top padding */
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 13px;            /* must equal .code-editor font-size */
     color: var(--text-muted);
-    line-height: 1.5;
+    line-height: 1.5;           /* must equal .code-editor line-height */
     user-select: none;
     text-align: right;
     min-width: 50px;
     overflow: hidden;
+    white-space: pre;           /* keeps newline-separated numbers in sync */
+    /* removed display:flex/flex-direction:column — plain block+white-space:pre is correct */
 }
 
 .code-editor {
     flex: 1;
     padding: 16px 16px;
     font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.5;
+    font-size: 13px;            /* must equal .line-numbers font-size */
+    line-height: 1.5;           /* must equal .line-numbers line-height */
     color: var(--text-primary);
     background: transparent;
     border: none;
