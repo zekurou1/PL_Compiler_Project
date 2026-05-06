@@ -51,44 +51,73 @@ def compile_code():
         return jsonify({
             'success': True,
             'output': [],
-            'error': None
+            'error': None,
+            'stages': [],
+            'tokens_count': 0
         })
     
+    stages = []
     try:
+        stages = []
+        
         # Stage 1: Lexer
         lexer = Lexer(code)
         tokens = lexer.tokenize()
+        stages.append({
+            'name': 'Lexer',
+            'status': 'success',
+            'details': f'{len(tokens)} tokens generated'
+        })
         
         # Stage 2: Parser
         parser = Parser(tokens)
         ast = parser.parse()
+        stages.append({
+            'name': 'Parser',
+            'status': 'success',
+            'details': 'AST built successfully'
+        })
         
         # Stage 3: Semantic Analysis
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
+        stages.append({
+            'name': 'Semantic Analysis',
+            'status': 'success',
+            'details': 'Type checking passed'
+        })
         
         # Stage 4: Interpreter
         interpreter = Interpreter()
         output = interpreter.execute(ast)
+        stages.append({
+            'name': 'Execution',
+            'status': 'success',
+            'details': f'{len(output)} output lines'
+        })
         
         return jsonify({
             'success': True,
             'output': output,
-            'error': None
+            'error': None,
+            'stages': stages,
+            'tokens_count': len(tokens)
         })
     
     except CompilerError as exc:
         return jsonify({
             'success': False,
             'output': [],
-            'error': str(exc)
+            'error': str(exc),
+            'stages': stages if 'stages' in locals() else []
         })
     
     except Exception as exc:
         return jsonify({
             'success': False,
             'output': [],
-            'error': f'[InternalError] {exc}'
+            'error': f'[InternalError] {exc}',
+            'stages': stages if 'stages' in locals() else []
         })
 
 

@@ -18,11 +18,24 @@ const outputStatusTxt = document.getElementById('outputStatusText');
 const charCount       = document.getElementById('charCount');
 const lineCount       = document.getElementById('lineCount');
 
+// Tab elements
+const outputTabs      = document.querySelectorAll('.output-tab');
+const tabContents     = document.querySelectorAll('.output-tab-content');
+const stagesContainer = document.getElementById('stages');
+const debugInfo       = document.getElementById('debug-info');
+const tokensCount     = document.getElementById('tokens-count');
+const execInfo        = document.getElementById('exec-info');
+
 // ─── Event Listeners ────────────────────────────────────────────────────────
 runBtn.addEventListener('click', runCode);
 clearBtn.addEventListener('click', clearCode);
 clearOutputBtn.addEventListener('click', clearOutput);
 sampleSelect.addEventListener('change', loadSample);
+
+// Tab switching
+outputTabs.forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+});
 
 window.addEventListener('DOMContentLoaded', loadSamples);
 window.addEventListener('load', () => codeEditor.focus());
@@ -54,6 +67,46 @@ function setStatus(state, text) {
     outputStatusTxt.textContent = text;
 }
 
+function switchTab(tabName) {
+    // Update tab buttons
+    outputTabs.forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.tab === tabName);
+    });
+    
+    // Update tab content
+    tabContents.forEach(content => {
+        content.classList.toggle('active', content.id === `${tabName}-content`);
+    });
+}
+
+function displayStages(stages) {
+    if (!stagesContainer) return;
+    
+    if (!stages || stages.length === 0) {
+        stagesContainer.innerHTML = '<div class="stage-placeholder">No stage data available</div>';
+        return;
+    }
+    
+    stagesContainer.innerHTML = stages.map(stage => `
+        <div class="stage-item ${stage.status}">
+            <div class="stage-icon">
+                ${stage.status === 'success' ? '✓' : stage.status === 'error' ? '✕' : '⟳'}
+            </div>
+            <div class="stage-info">
+                <div class="stage-name">${stage.name}</div>
+                <div class="stage-details">${stage.details}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function displayDebugInfo(tokensCount, executionInfo) {
+    if (!tokensCount || !execInfo) return;
+    
+    tokensCount.textContent = `${executionInfo.tokens_count || 0} tokens generated`;
+    execInfo.textContent = executionInfo.details || 'No execution data';
+}
+
 // ─── Run Code ───────────────────────────────────────────────────────────────
 async function runCode() {
     const code = codeEditor.value.trim();
@@ -68,6 +121,7 @@ async function runCode() {
     output.style.color = '';
     errorBox.textContent = '';
     errorBox.classList.remove('active');
+    stagesContainer.innerHTML = '<div class="stage-placeholder">Compiling...</div>';
 
     // Loading state
     runBtn.disabled = true;
@@ -91,11 +145,23 @@ async function runCode() {
                 : '(no output)';
             if (!data.output.length) output.style.color = 'var(--text-muted)';
             errorBox.classList.remove('active');
+            
+            // Display stages and debug info
+            displayStages(data.stages);
+            displayDebugInfo(tokensCount, {
+                tokens_count: data.tokens_count,
+                details: `${data.output.length} output line${data.output.length !== 1 ? 's' : ''}`
+            });
+            
             setStatus('success', `Done · ${data.output.length} line${data.output.length !== 1 ? 's' : ''}`);
         } else {
             errorBox.textContent = data.error || 'Unknown error';
             errorBox.classList.add('active');
             output.textContent = '';
+            
+            // Display stages (may be partial if error occurred)
+            displayStages(data.stages);
+            
             setStatus('error', 'Compilation failed');
         }
     } catch (err) {
@@ -168,4 +234,4 @@ async function loadSample() {
     }
 }
 
-console.log('%c Toy Language Compiler ready ', 'background:#0d0f12;color:#4ec994;font-family:monospace;padding:4px 8px;border-radius:4px;');
+console.log('%c CoolCompiler ready ', 'background:#0a0e27;color:#00d4ff;font-family:monospace;padding:4px 8px;border-radius:4px;text-shadow:0 0 10px #00d4ff;');

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToyLang Compiler</title>
+    <title>CoolCompiler</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -13,10 +13,10 @@
     <!-- ── Header ── -->
     <header class="header">
         <div class="header-left">
-            <div class="header-logo">⬡</div>
+            <div class="header-logo">⚡</div>
             <div>
-                <h1>ToyLang <span class="header-badge">v1.0</span></h1>
-                <div class="subtitle">// interactive compiler playground</div>
+                <h1>CoolCompiler <span class="header-badge">v2.0</span></h1>
+                <div class="subtitle">// next-gen compiler experience</div>
             </div>
         </div>
         <div class="header-meta">
@@ -37,7 +37,7 @@
                         <div class="window-dot min"></div>
                         <div class="window-dot expand"></div>
                     </div>
-                    <h2>editor.tl</h2>
+                    <h2>source.cc</h2>
                 </div>
                 <div class="toolbar">
                     <select id="sampleSelect" class="btn btn-ghost">
@@ -62,7 +62,7 @@
                     autocomplete="off"
                     autocorrect="off"
                     autocapitalize="off"
-                    placeholder="// Write your ToyLang code here…&#10;// Press Ctrl+Enter to run"
+                    placeholder="// Write your CoolCompiler code here…&#10;// Press Ctrl+Enter to run"
                 ></textarea>
             </div>
 
@@ -85,7 +85,7 @@
                         <div class="window-dot min"></div>
                         <div class="window-dot expand"></div>
                     </div>
-                    <h2>stdout</h2>
+                    <h2>Output & Debug</h2>
                 </div>
                 <div class="toolbar">
                     <button id="clearOutputBtn" class="btn btn-ghost">
@@ -95,9 +95,46 @@
                 </div>
             </div>
 
+            <!-- Output Tabs -->
+            <div class="output-tabs">
+                <button class="output-tab active" data-tab="output">
+                    <span class="tab-icon">▶</span> Output
+                </button>
+                <button class="output-tab" data-tab="stages">
+                    <span class="tab-icon">⚙</span> Stages
+                </button>
+                <button class="output-tab" data-tab="debug">
+                    <span class="tab-icon">🐛</span> Debug
+                </button>
+            </div>
+
             <div class="output-body">
-                <pre id="output" class="output-box"></pre>
-                <div id="error" class="error-box"></div>
+                <!-- Output Tab -->
+                <div id="output-content" class="output-tab-content active">
+                    <pre id="output" class="output-box"></pre>
+                    <div id="error" class="error-box"></div>
+                </div>
+
+                <!-- Stages Tab -->
+                <div id="stages-content" class="output-tab-content">
+                    <div id="stages" class="stages-container">
+                        <div class="stage-placeholder">Run code to see compilation stages</div>
+                    </div>
+                </div>
+
+                <!-- Debug Tab -->
+                <div id="debug-content" class="output-tab-content">
+                    <div id="debug-info" class="debug-container">
+                        <div class="debug-section">
+                            <h4>Tokens</h4>
+                            <div id="tokens-count" class="debug-stat">0 tokens</div>
+                        </div>
+                        <div class="debug-section">
+                            <h4>Execution Info</h4>
+                            <div id="exec-info" class="debug-stat">No execution data</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="output-status">
@@ -144,7 +181,7 @@
 
     <!-- ── Footer ── -->
     <footer class="footer">
-        ToyLang Compiler Playground &nbsp;·&nbsp; Built with ♥ &nbsp;·&nbsp; Pure Python
+        CoolCompiler &nbsp;·&nbsp; Modern Compiler Experience &nbsp;·&nbsp; Built with ⚡ Pure Python
     </footer>
 
 </div>
