@@ -1,5 +1,5 @@
 """
-ast_nodes.py — AST node hierarchy for the toy language.
+ast_nodes.py — AST node hierarchy for CoolCompiler.
 
 Every grammar production has a corresponding node class.
 All nodes inherit from ASTNode and support pretty-printing.

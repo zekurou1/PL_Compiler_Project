@@ -1,6 +1,6 @@
-# Toy Language Compiler - Web Frontend
+# CoolCompiler - Web Frontend
 
-A modern, real-time web interface for the toy language compiler.
+A modern, real-time web interface for CoolCompiler.
 
 ## Features
 

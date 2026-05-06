@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────
 // sample_program.txt
-// Exercises every feature of the toy language:
+// Exercises every feature of CoolCompiler:
 //   variables, arithmetic, strings, booleans, comparisons,
 //   if/else, while loop, nested blocks.
 // ─────────────────────────────────────────────────────────────

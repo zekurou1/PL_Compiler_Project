@@ -3,187 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoolCompiler</title>
+    <title>CoolCompiler - IDE</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<div class="container">
+<!-- ── IDE CONTAINER ── -->
+<div class="ide-container">
 
-    <!-- ── Header ── -->
-    <header class="header">
+    <!-- ── HEADER ── -->
+    <header class="ide-header">
         <div class="header-left">
             <div class="header-logo">⚡</div>
-            <div>
-                <h1>CoolCompiler <span class="header-badge">v2.0</span></h1>
-                <div class="subtitle">// next-gen compiler experience</div>
-            </div>
+            <div class="header-title">CoolCompiler <span class="header-version">v2.0</span></div>
         </div>
-        <div class="header-meta">
-            <div class="status-dot"></div>
-            <span class="status-label">RUNTIME READY</span>
+        <div class="header-status">
+            <span class="status-indicator"></span>
+            <span class="status-text">RUNTIME READY</span>
         </div>
     </header>
 
-    <!-- ── Main Editor / Output ── -->
-    <main class="main-content">
+    <!-- ── MAIN LAYOUT (sidebar | editor | right-sidebar) ── -->
+    <div class="ide-layout">
 
-        <!-- Editor Panel -->
-        <div class="panel editor-panel">
-            <div class="panel-header">
-                <div class="panel-header-left">
-                    <div class="window-dots">
-                        <div class="window-dot close"></div>
-                        <div class="window-dot min"></div>
-                        <div class="window-dot expand"></div>
+        <!-- ── LEFT SIDEBAR ── -->
+        <aside class="sidebar sidebar-left">
+            <div class="sidebar-header">
+                <h3>Explorer</h3>
+            </div>
+            <div class="sidebar-content">
+                <div class="file-tree">
+                    <div class="tree-item active">
+                        <span class="tree-icon">📄</span>
+                        <span class="tree-label">code.cc</span>
                     </div>
-                    <h2>source.cc</h2>
-                </div>
-                <div class="toolbar">
-                    <select id="sampleSelect" class="btn btn-ghost">
-                        <option value="">Load sample…</option>
-                    </select>
-                    <button id="clearBtn" class="btn btn-ghost">
-                        <span class="btn-icon">⌫</span>
-                        Clear
-                    </button>
-                    <button id="runBtn" class="btn btn-run">
-                        <span class="btn-icon">▶</span>
-                        <span class="btn-label">Run</span>
-                    </button>
                 </div>
             </div>
+            <div class="sidebar-footer">
+                <div class="quick-action-button" title="New file">
+                    <span>➕</span>
+                </div>
+            </div>
+        </aside>
 
-            <div class="editor-body">
-                <textarea
-                    id="codeEditor"
-                    class="editor-textarea"
-                    spellcheck="false"
-                    autocomplete="off"
-                    autocorrect="off"
-                    autocapitalize="off"
-                    placeholder="// Write your CoolCompiler code here…&#10;// Press Ctrl+Enter to run"
-                ></textarea>
+        <!-- ── CENTER EDITOR AREA ── -->
+        <main class="editor-area">
+
+            <!-- Breadcrumb Navigation -->
+            <div class="breadcrumb">
+                <span class="breadcrumb-item">code.cc</span>
             </div>
 
-            <div class="editor-footer">
-                <span class="editor-stat">Chars: <span id="charCount">0</span></span>
-                <span class="editor-stat">Lines: <span id="lineCount">0</span></span>
-                <span style="flex:1"></span>
-                <span class="kbd-hint">
-                    <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> to run
-                </span>
-            </div>
-        </div>
-
-        <!-- Output Panel -->
-        <div class="panel output-panel">
-            <div class="panel-header">
-                <div class="panel-header-left">
-                    <div class="window-dots">
-                        <div class="window-dot close"></div>
-                        <div class="window-dot min"></div>
-                        <div class="window-dot expand"></div>
+            <!-- Tab Bar -->
+            <div class="tab-bar">
+                <div class="tabs-container">
+                    <div class="tab active" data-file="code.cc">
+                        <span class="tab-label">code.cc</span>
+                        <button class="tab-close" title="Close tab">✕</button>
                     </div>
-                    <h2>Output & Debug</h2>
                 </div>
-                <div class="toolbar">
-                    <button id="clearOutputBtn" class="btn btn-ghost">
-                        <span class="btn-icon">✕</span>
-                        Clear
-                    </button>
+                <button class="tab-add" title="New tab">➕</button>
+            </div>
+
+            <!-- Editor Content -->
+            <div class="editor-content">
+                <div class="editor-wrapper">
+                    <div class="line-numbers" id="lineNumbers"></div>
+                    <textarea
+                        id="codeEditor"
+                        class="code-editor"
+                        spellcheck="false"
+                        placeholder="// Write your CoolCompiler code here…&#10;// Press Ctrl+Enter to run"
+                    ></textarea>
                 </div>
             </div>
 
-            <!-- Output Tabs -->
-            <div class="output-tabs">
-                <button class="output-tab active" data-tab="output">
-                    <span class="tab-icon">▶</span> Output
-                </button>
-                <button class="output-tab" data-tab="stages">
-                    <span class="tab-icon">⚙</span> Stages
-                </button>
-                <button class="output-tab" data-tab="debug">
-                    <span class="tab-icon">🐛</span> Debug
-                </button>
-            </div>
-
-            <div class="output-body">
-                <!-- Output Tab -->
-                <div id="output-content" class="output-tab-content active">
-                    <pre id="output" class="output-box"></pre>
-                    <div id="error" class="error-box"></div>
-                </div>
-
-                <!-- Stages Tab -->
-                <div id="stages-content" class="output-tab-content">
-                    <div id="stages" class="stages-container">
-                        <div class="stage-placeholder">Run code to see compilation stages</div>
+            <!-- Bottom Panel (Collapsible) -->
+            <div class="bottom-panel" id="bottomPanel">
+                <div class="bottom-panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">⚙</span>
+                        <span>Output & Debug</span>
+                    </div>
+                    <div class="panel-controls">
+                        <button class="panel-btn" id="bottomToggle" title="Collapse/Expand">
+                            <span class="toggle-icon">▼</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Debug Tab -->
-                <div id="debug-content" class="output-tab-content">
-                    <div id="debug-info" class="debug-container">
-                        <div class="debug-section">
-                            <h4>Tokens</h4>
-                            <div id="tokens-count" class="debug-stat">0 tokens</div>
-                        </div>
-                        <div class="debug-section">
-                            <h4>Execution Info</h4>
-                            <div id="exec-info" class="debug-stat">No execution data</div>
+                <!-- Panel Tabs -->
+                <div class="panel-tabs">
+                    <button class="panel-tab active" data-tab="output">
+                        <span class="tab-icon">▶</span> Output
+                    </button>
+                    <button class="panel-tab" data-tab="stages">
+                        <span class="tab-icon">⚙</span> Stages
+                    </button>
+                    <button class="panel-tab" data-tab="debug">
+                        <span class="tab-icon">🐛</span> Debug
+                    </button>
+                </div>
+
+                <!-- Panel Content -->
+                <div class="panel-content">
+                    <!-- Output Tab -->
+                    <div id="output-tab" class="panel-tab-content active">
+                        <div class="output-wrapper">
+                            <pre id="output" class="output-text"></pre>
+                            <div id="error" class="error-text"></div>
                         </div>
                     </div>
+
+                    <!-- Stages Tab -->
+                    <div id="stages-tab" class="panel-tab-content">
+                        <div id="stages" class="stages-list">
+                            <div class="stage-placeholder">Run code to see compilation stages</div>
+                        </div>
+                    </div>
+
+                    <!-- Debug Tab -->
+                    <div id="debug-tab" class="panel-tab-content">
+                        <div class="debug-info">
+                            <div class="debug-item">
+                                <span class="debug-label">Tokens:</span>
+                                <span id="tokens-count" class="debug-value">0</span>
+                            </div>
+                            <div class="debug-item">
+                                <span class="debug-label">Status:</span>
+                                <span id="exec-status" class="debug-value">Ready</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="output-status">
-                <div id="outputIndicator" class="output-indicator"></div>
-                <span id="outputStatusText" class="output-status-text">Ready</span>
-            </div>
-        </div>
+        </main>
 
-    </main>
+        <!-- ── RIGHT SIDEBAR ── -->
+        <aside class="sidebar sidebar-right">
+            <div class="sidebar-header">
+                <h3>Settings</h3>
+            </div>
+            <div class="sidebar-content">
+                <div class="settings-group">
+                    <div class="settings-item">
+                        <label>
+                            <input type="checkbox" id="autoRun" checked>
+                            <span>Auto-format</span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <label>
+                            <input type="checkbox" id="showMinimap" checked>
+                            <span>Show Minimap</span>
+                        </label>
+                    </div>
+                </div>
 
-    <!-- ── Grammar Reference ── -->
-    <section class="grammar-section">
-        <div class="grammar-header">
-            <h3>Language Reference</h3>
-            <div class="grammar-header-line"></div>
-        </div>
-        <div class="syntax-grid">
-            <div class="syntax-card">
-                <h4>Variables</h4>
-                <code>let x = 10</code>
-            </div>
-            <div class="syntax-card">
-                <h4>Print</h4>
-                <code>print("Hello, World!")</code>
-            </div>
-            <div class="syntax-card">
-                <h4>Conditionals</h4>
-                <code>if (x > 5) { ... } else { ... }</code>
-            </div>
-            <div class="syntax-card">
-                <h4>Loops</h4>
-                <code>while (x > 0) { x = x - 1 }</code>
-            </div>
-            <div class="syntax-card">
-                <h4>Arithmetic</h4>
-                <code>x + y - z * a / b</code>
-            </div>
-            <div class="syntax-card">
-                <h4>Booleans</h4>
-                <code>true, false, &&, ||, !</code>
-            </div>
-        </div>
-    </section>
+                <div class="minimap" id="minimap">
+                    <div class="minimap-placeholder">Minimap</div>
+                </div>
 
-    <!-- ── Footer ── -->
-    <footer class="footer">
-        CoolCompiler &nbsp;·&nbsp; Modern Compiler Experience &nbsp;·&nbsp; Built with ⚡ Pure Python
+                <div class="syntax-reference">
+                    <h4>Quick Reference</h4>
+                    <div class="ref-item"><code>let</code> — Variables</div>
+                    <div class="ref-item"><code>if/else</code> — Conditionals</div>
+                    <div class="ref-item"><code>while</code> — Loops</div>
+                    <div class="ref-item"><code>print()</code> — Output</div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <footer class="ide-footer">
+        <div class="footer-left">
+            <span id="charCount">0</span> chars · <span id="lineCount">1</span> lines
+        </div>
+        <div class="footer-center">
+            <button id="runBtn" class="btn-run" title="Run (Ctrl+Enter)">
+                <span class="icon">▶</span> Run
+            </button>
+            <button id="clearBtn" class="btn-clear" title="Clear editor">
+                <span class="icon">✕</span> Clear
+            </button>
+        </div>
+        <div class="footer-right">
+            <span id="outputStatus" class="status-badge">Ready</span>
+        </div>
     </footer>
 
+</div>
+
+<!-- ── Find & Replace Modal ── -->
+<div class="find-replace-modal" id="findReplaceModal">
+    <div class="find-replace-box">
+        <div class="find-replace-header">
+            <h4>Find & Replace</h4>
+            <button class="close-btn" id="closeFindReplace">✕</button>
+        </div>
+        <div class="find-replace-content">
+            <input type="text" id="findInput" class="find-input" placeholder="Find…">
+            <input type="text" id="replaceInput" class="replace-input" placeholder="Replace…">
+            <div class="find-buttons">
+                <button id="findNextBtn" class="btn-small">Next</button>
+                <button id="replaceBtn" class="btn-small">Replace</button>
+                <button id="replaceAllBtn" class="btn-small">Replace All</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>

@@ -1,6 +1,6 @@
 # Frontend Integration Complete ✅
 
-The toy language compiler now has a professional, real-time web interface fully integrated into the Flask backend.
+CoolCompiler now has a professional, real-time web interface fully integrated into the Flask backend.
 
 ## 🎨 What's Integrated
 
@@ -26,7 +26,7 @@ project_root/
 
 ## ✨ Features
 
-### **Editor Panel (editor.tl)**
+### **Editor Panel (code.cc)**
 ✅ Real-time code input  
 ✅ Character & line counting  
 ✅ Syntax highlighting hints  
@@ -87,14 +87,14 @@ python main.py --debug program.txt
 ### **Test Cases**
 
 **Success Case:**
-```toylang
+```coolcompiler
 let x = 10;
 print(x);
 ```
 Expected: Outputs `10`
 
 **Error Case:**
-```toylang
+```coolcompiler
 print(undefined);
 ```
 Expected: `[SemanticError] (line 1, col 7) Use of undeclared variable 'undefined'`
@@ -186,13 +186,13 @@ Clear browser cache (Ctrl+Shift+Delete) and reload
 ## 📚 Sample Programs
 
 ### Hello World
-```toylang
+```coolcompiler
 let greeting = "Hello, World!";
 print(greeting);
 ```
 
 ### Arithmetic
-```toylang
+```coolcompiler
 let a = 10;
 let b = 3;
 print(a + b);
@@ -202,7 +202,7 @@ print(a / b);
 ```
 
 ### Conditionals
-```toylang
+```coolcompiler
 let x = 15;
 if (x > 10) {
     print("x is greater than 10");
@@ -212,7 +212,7 @@ if (x > 10) {
 ```
 
 ### While Loop
-```toylang
+```coolcompiler
 let i = 1;
 while (i <= 5) {
     print(i);
@@ -223,17 +223,17 @@ while (i <= 5) {
 ## 🎓 Language Syntax
 
 ### Variables
-```toylang
+```coolcompiler
 let name = value;
 ```
 
 ### Print
-```toylang
+```coolcompiler
 print(expression);
 ```
 
 ### Arithmetic
-```toylang
+```coolcompiler
 x + y    // Addition
 x - y    // Subtraction
 x * y    // Multiplication
@@ -241,7 +241,7 @@ x / y    // Division
 ```
 
 ### Comparison
-```toylang
+```coolcompiler
 x == y   // Equal
 x != y   // Not equal
 x > y    // Greater than
@@ -251,14 +251,14 @@ x <= y   // Less or equal
 ```
 
 ### Boolean Logic
-```toylang
+```coolcompiler
 true && false   // AND
 true || false   // OR
 !true           // NOT
 ```
 
 ### Control Flow
-```toylang
+```coolcompiler
 if (condition) {
     // ...
 } else {
@@ -302,7 +302,7 @@ while (condition) {
 
 ## 🎉 Summary
 
-The toy language compiler now features:
+CoolCompiler now features:
 - **Professional web UI** with dark IDE theme
 - **Real-time code execution** with instant feedback
 - **Rich error reporting** with line/column information

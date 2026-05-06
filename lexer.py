@@ -1,5 +1,5 @@
 """
-lexer.py — Hand-written lexical analyser for the toy language.
+lexer.py — Hand-written lexical analyser for CoolCompiler.
 
 Design notes
 ============

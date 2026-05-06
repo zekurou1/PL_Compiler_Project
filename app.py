@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-app.py — Flask web server for the compiler with real-time execution.
+app.py — Flask web server for CoolCompiler with real-time execution.
 
-Provides a web interface where users can write programs and see output in real-time.
+Provides a web IDE where users can write programs and see output in real-time.
 """
 
 from flask import Flask, render_template, request, jsonify
@@ -109,7 +109,8 @@ def compile_code():
             'success': False,
             'output': [],
             'error': str(exc),
-            'stages': stages if 'stages' in locals() else []
+            'stages': stages if 'stages' in locals() else [],
+            'tokens_count': 0
         })
     
     except Exception as exc:
@@ -117,7 +118,8 @@ def compile_code():
             'success': False,
             'output': [],
             'error': f'[InternalError] {exc}',
-            'stages': stages if 'stages' in locals() else []
+            'stages': stages if 'stages' in locals() else [],
+            'tokens_count': 0
         })
 
 
